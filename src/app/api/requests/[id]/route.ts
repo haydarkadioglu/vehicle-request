@@ -7,13 +7,13 @@ type RouteParams = {
   };
 };
 
-// Fix the GET handler signature to match Next.js expectations
+// Use the correct parameter type structure for Next.js App Router
 export async function GET(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt(context.params.id);
     if (isNaN(id)) {
       return NextResponse.json(
         { success: false, error: 'Invalid ID' },
@@ -42,13 +42,12 @@ export async function GET(
   }
 }
 
-// Fix the PATCH handler signature as well
 export async function PATCH(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt(context.params.id);
     if (isNaN(id)) {
       return NextResponse.json(
         { success: false, error: 'Invalid ID' },
@@ -83,13 +82,12 @@ export async function PATCH(
   }
 }
 
-// Fix the DELETE handler signature as well
 export async function DELETE(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id);
+    const id = parseInt(context.params.id);
     if (isNaN(id)) {
       return NextResponse.json(
         { success: false, error: 'Invalid ID' },
