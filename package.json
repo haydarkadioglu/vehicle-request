@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "jest-mock-extended": "^4.0.0-beta1",
     "next": "15.2.2",
+    "pg": "^8.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
