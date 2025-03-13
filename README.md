@@ -1,4 +1,11 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vehicle Request System
+
+This project is a comprehensive vehicle request management system built with Next.js, Prisma, and Tailwind CSS. It provides a user-friendly interface for hospital staff to request vehicle transportation services, while giving administrators tools to manage and respond to these requests efficiently.
+
+## Overview
+
+The Vehicle Request System was developed for Darulaceze to streamline the process of requesting and managing transportation services. It enables healthcare units to submit vehicle requests for patient transportation, with functionality to track request status and manage approvals.
+
 
 ## Getting Started
 
@@ -13,6 +20,19 @@ pnpm dev
 # or
 bun dev
 ```
+## Development
+
+To start developing:
+
+```bash
+# Install dependencies
+npm install
+
+# Set up the database
+npx prisma migrate dev
+
+# Start development server
+npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
@@ -29,8 +49,37 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Features
+
+- **Request Creation**: Users can submit detailed vehicle transportation requests with information about the patient, destination, and specific needs (wheelchair, stretcher).
+- **Request Management**: Users can view their submitted requests and track their status.
+- **Driver Panel**: Authorized drivers can view pending requests, approve or reject them, and view historical requests.
+- **Admin Panel**: Administrators have full access to all requests with the ability to delete records.
+- **Real-time Updates**: The system automatically refreshes data every 10 seconds to ensure users see the most current information.
+- **Mobile Responsive**: Fully responsive design that works well on both desktop and mobile devices.
+- **Authentication**: Simple authentication system for authorized personnel.
+
+## Technology Stack
+
+- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Prisma ORM with support for various database providers
+- **Deployment**: Optimized for Vercel deployment
+
+## System Architecture
+
+The application follows a modern architecture with:
+
+1. **Client-side Components**: React components with server and client components separation
+2. **Server-side API Routes**: Handles data operations and business logic
+3. **Data Layer**: Prisma ORM for database operations
+4. **Authentication**: Simple localStorage-based authentication system
+
+## User Roles
+
+- **Regular Users**: Can create requests and view their own submitted requests
+- **Drivers/Authorized Personnel**: Can view all requests and approve/reject them
+- **Administrators**: Have full access to system data with ability to delete records
+
