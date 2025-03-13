@@ -10,7 +10,7 @@ type Request = {
   unitName: string;
   personnelName: string;
   phoneNumber: string;
-  notes: string;
+  notes: string | null;
   missionDate: string;
   missionTime: string;
   destination: string;
@@ -18,6 +18,26 @@ type Request = {
   withWheelchair: boolean;
   withStretcher: boolean;
   createdAt: string;
+};
+
+// Define API response type to avoid 'any'
+type ApiResponse = {
+  success: boolean;
+  data?: {
+    id: number;
+    unitName: string;
+    personnelName: string;
+    phoneNumber: string;
+    notes: string | null;
+    missionDate: string;
+    missionTime: string;
+    destination: string;
+    status: string;
+    withWheelchair: boolean;
+    withStretcher: boolean;
+    createdAt: string;
+  }[];
+  error?: string;
 };
 
 export default function RequestsPage() {
@@ -36,11 +56,11 @@ export default function RequestsPage() {
         throw new Error('Talepler yüklenirken bir hata oluştu');
       }
       
-      const data = await response.json();
+      const data = await response.json() as ApiResponse;
       
       if (data.success && data.data) {
         // Format the date for display
-        const formattedRequests = data.data.map((req: any) => ({
+        const formattedRequests = data.data.map((req) => ({
           ...req,
           missionDate: new Date(req.missionDate).toLocaleDateString('tr-TR'),
           createdAt: new Date(req.createdAt).toLocaleDateString('tr-TR')

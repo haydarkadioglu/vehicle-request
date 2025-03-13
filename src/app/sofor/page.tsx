@@ -21,13 +21,33 @@ type Request = {
   createdAt: string;
 };
 
+// Define API response type to avoid 'any'
+type ApiResponse = {
+  success: boolean;
+  data?: {
+    id: number;
+    unitName: string;
+    personnelName: string;
+    phoneNumber: string;
+    notes: string | null;
+    missionDate: string;
+    missionTime: string;
+    destination: string;
+    status: string;
+    withWheelchair: boolean;
+    withStretcher: boolean;
+    createdAt: string;
+  }[];
+  error?: string;
+};
+
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('pending');
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
+  // Remove unused lastRefreshTime state
   const router = useRouter();
   
   // Check authentication status
@@ -61,8 +81,10 @@ export default function AdminPanel() {
     checkAuth();
   }, [router]);
 
-  // Create a memoized fetch function to avoid recreating it on each render
+  // Fetch requests only if authenticated
   const fetchRequests = useCallback(async (showLoading = true) => {
+    if (!isAuthenticated) return;
+    
     try {
       if (showLoading) setLoading(true);
       
@@ -72,18 +94,17 @@ export default function AdminPanel() {
         throw new Error('Talepler yüklenirken bir hata oluştu');
       }
       
-      const data = await response.json();
+      const data = await response.json() as ApiResponse;
       
       if (data.success && data.data) {
         // Format the date for display
-        const formattedRequests = data.data.map((req: any) => ({
+        const formattedRequests = data.data.map((req) => ({
           ...req,
           missionDate: new Date(req.missionDate).toLocaleDateString('tr-TR'),
           createdAt: new Date(req.createdAt).toLocaleDateString('tr-TR')
         }));
         
         setRequests(formattedRequests);
-        setLastRefreshTime(new Date());
       } else {
         throw new Error('Veri alınamadı');
       }
@@ -93,23 +114,23 @@ export default function AdminPanel() {
     } finally {
       if (showLoading) setLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
-  // Initial data load
+  // Initial data fetch
   useEffect(() => {
-    if (!isAuthenticated) return;
-    fetchRequests();
+    if (isAuthenticated) {
+      fetchRequests();
+    }
   }, [isAuthenticated, fetchRequests]);
 
-  // Set up polling for data refresh (every 10 seconds)
+  // Set up polling
   useEffect(() => {
     if (!isAuthenticated) return;
     
     const intervalId = setInterval(() => {
-      fetchRequests(false); // false means don't show loading spinner for auto-refresh
-    }, 10000); // 10 seconds
+      fetchRequests(false);
+    }, 10000);
     
-    // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
   }, [isAuthenticated, fetchRequests]);
   
@@ -119,10 +140,10 @@ export default function AdminPanel() {
     localStorage.removeItem('adminLoginExpiry');
     router.push('/sofor/giris');
   };
-
+  
   // Manual refresh function
   const handleManualRefresh = () => {
-    fetchRequests(true); // true means show loading spinner for manual refresh
+    fetchRequests(true);
   };
 
   // If not authenticated, show loading state or nothing
@@ -172,10 +193,8 @@ export default function AdminPanel() {
       alert('İşlem sırasında bir hata oluştu.');
     }
   };
-
-  const viewDetails = (id: number) => {
-    router.push(`/talepler/${id}`);
-  };
+  
+  // Remove unused viewDetails function
   
   return (
     <>
@@ -191,7 +210,6 @@ export default function AdminPanel() {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold text-black">Yetkili Yönetim Paneli</h1>
-              {/* Last refresh time text removed as requested */}
             </div>
             <div className="flex space-x-2">
               <button 
