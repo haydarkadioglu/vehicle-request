@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
+// Remove the unused RouteParams type declaration
 
-// Use the correct parameter type structure for Next.js App Router
 export async function GET(
   request: NextRequest,
   context: { params: { id: string } }
