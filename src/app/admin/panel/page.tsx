@@ -21,38 +21,44 @@ type Request = {
   createdAt: string;
 };
 
-export default function AdminPanel() {
-  const [activeTab, setActiveTab] = useState('all'); // Default to showing all requests
+// Define API response type to avoid 'any'
+type ApiResponse = {
+  success: boolean;
+  data?: {
+    id: number;
+    unitName: string;
+    personnelName: string;
+    phoneNumber: string;
+    notes: string | null;
+    missionDate: string;
+    missionTime: string;
+    destination: string;
+    status: string;
+    withWheelchair: boolean;
+    withStretcher: boolean;
+    createdAt: string;
+  }[];
+  error?: string;
+};
+
+export default function SuperAdminPanel() {
   const [requests, setRequests] = useState<Request[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState('all');
   const router = useRouter();
   
-  // Check authentication status
+  // Check authentication status - for admin we'll use a different localStorage key
   useEffect(() => {
     const checkAuth = () => {
-      // Check if logged in
+      // Check if logged in - we're using adminLoggedIn for the super admin too for simplicity
       const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
       
-      // Check if login is expired
-      let isExpired = false;
-      const expiryStr = localStorage.getItem('adminLoginExpiry');
-      if (expiryStr) {
-        const expiry = new Date(expiryStr);
-        isExpired = new Date() > expiry;
-      }
-      
-      if (!isLoggedIn || isExpired) {
-        // Clear any expired login data
-        if (isExpired) {
-          localStorage.removeItem('adminLoggedIn');
-          localStorage.removeItem('adminLoginExpiry');
-        }
-        
+      if (!isLoggedIn) {
         // Redirect to login page
-        router.replace('/sofor/giris');
+        router.replace('/admin/login');
       } else {
         setIsAuthenticated(true);
       }
@@ -74,11 +80,11 @@ export default function AdminPanel() {
           throw new Error('Talepler yüklenirken bir hata oluştu');
         }
         
-        const data = await response.json();
+        const data = await response.json() as ApiResponse;
         
         if (data.success && data.data) {
           // Format the date for display
-          const formattedRequests = data.data.map((req: any) => ({
+          const formattedRequests = data.data.map((req) => ({
             ...req,
             missionDate: new Date(req.missionDate).toLocaleDateString('tr-TR'),
             createdAt: new Date(req.createdAt).toLocaleDateString('tr-TR')

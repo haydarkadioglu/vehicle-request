@@ -2,17 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSoforLoggedIn, setIsSoforLoggedIn] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
+  
   useEffect(() => {
     // Check if sofor is logged in when component mounts
-    const soforLoggedIn = localStorage.getItem('soforLoggedIn') === 'true';
+    const soforLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
     setIsSoforLoggedIn(soforLoggedIn);
   }, []);
 
@@ -52,7 +51,7 @@ const Navbar = () => {
               href="/talepler"
               className={`py-5 px-3 text-white hover:bg-blue-700 transition duration-300 ${isActive('/talepler')}`}
             >
-              Taleplerim
+              Talep Ekranı
             </Link>
             <Link
               href={isSoforLoggedIn ? "/sofor" : "/sofor/giris"}
@@ -62,7 +61,6 @@ const Navbar = () => {
             >
               Yetkili Ekranı
             </Link>
-            {/* Admin link removed as requested */}
           </div>
 
           {/* Mobile menu button */}
@@ -117,7 +115,6 @@ const Navbar = () => {
         >
           Yetkili Ekranı
         </Link>
-        {/* Admin link removed from mobile menu as well */}
       </div>
     </nav>
   );
