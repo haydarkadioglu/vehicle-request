@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model VehicleRequest {
+  id              Int      @id @default(autoincrement())
+  unitName        String   // Birim Adı
+  personnelName   String   // Personel Ad Soyad
+  phoneNumber     String   // Telefon Numarası
+  notes           String?  // Not
+  missionDate     DateTime // Görev Tarihi 
+  missionTime     String   // Görev Saati (stored as string for simplicity)
+  destination     String   // Gidilecek Mevki
+  withWheelchair  Boolean  @default(false) // Tekerlekli Sandalye
+  withStretcher   Boolean  @default(false) // Sedye
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
